@@ -2,21 +2,23 @@
 
 const express = require('express');
 const router = express.Router();
-// const uuidv1 = require('uuid/v1');
+const request = require("request");
+const cheerio = require("cheerio");
 // let dToday = new Date();
-console.log(dToday)
-let maxId = 4
+// console.log(dToday)
 
+
+let maxId = 4
 
 const DATABASE = {
   employee1: {
-    'id': maxId + 1,
+    'id': '1',
     'firstName': 'Al',
     'lastName': 'Gore',
     'hireDate': '2000 - 11 - 02',
     'role': 'CEO',
     'favoriteQuote': 'Strippers do nothing for me…but I will take a free breakfast buffet anytime, anyplace.',
-    'secondItem': "The idea that everyone should slavishly work so they do something inefficiently so they keep their job – that just doesn’t make any sense to me. That can’t be the right answer."
+    'otherQuote': "The idea that everyone should slavishly work so they do something inefficiently so they keep their job – that just doesn’t make any sense to me. That can’t be the right answer."
   },
   employee2: {
     'id': '2',
@@ -43,7 +45,27 @@ const DATABASE = {
   },
 };
 
+//Get a quote to add to a new employee
+const quote = () => {
+  const url = "https://ron-swanson-quotes.herokuapp.com/v2/quotes";
+  request.get(url, (error, response, body) => {
+    let inQuote = JSON.parse(body);
+    console.log(inQuote);
+    return inQuote;
+  })
+};
 
+//Get a joke to add to a new employee
+const joke = () => {
+  const url1 = "https://icanhazdadjoke.com";
+  request.get(url1, (error, response, body) => {
+    let $ = cheerio.load(body)
+    let inJoke = $("p.subtitle").text();
+    console.log(inJoke);
+    return inJoke;
+
+  })
+}
 
 /* GET employees listing. */
 router.get('', function (req, res) {
@@ -67,6 +89,8 @@ router.post('', function (req, res) {
   const newEmployee = req.body;
   if (newEmployee.role !== "CEO") {
     newEmployee.id = maxId;
+    newEmployee.favoriteQuote = quote()
+    newEmployee.bestJoke = joke()
     DATABASE["employee" + newEmployee.id] = newEmployee;
     res.send(newEmployee)
   }
