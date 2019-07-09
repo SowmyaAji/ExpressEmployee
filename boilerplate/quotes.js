@@ -35,13 +35,26 @@ const cheerio = require("cheerio");
 
 // })
 
-const url2 = "https://quotes.rest/qod"
-request.get(url2, (error, response, html) => {
-    let $ = cheerio.load(html, {
-        xmlMode: true
-    });
-    let quote2 = $('[xml\\:contents\\:quotes\\:quote]').text();
+// const url2 = "https://quotes.rest/qod"
+// request.get(url2, (error, response, html) => {
+//     let $ = cheerio.load(html, {
+//         xmlMode: true
+//     });
+//     let quote2 = $('[xml\\:contents\\:quotes\\:quote]').text();
 
-    console.log(quote2);
+//     console.log(quote2);
 
-})
+// })
+
+
+const joke = () => {
+    const url1 = "https://icanhazdadjoke.com";
+    request.get(url1, (error, response, body) {
+        let $ = cheerio.load(body)
+        let inJoke = $("p.subtitle").text();
+        // console.log(inJoke)
+        // return inJoke;
+
+    })
+}
+joke()

@@ -10,6 +10,7 @@ const cheerio = require("cheerio");
 
 let maxId = 4
 
+
 const DATABASE = {
   employee1: {
     'id': '1',
@@ -18,7 +19,7 @@ const DATABASE = {
     'hireDate': '2000 - 11 - 02',
     'role': 'CEO',
     'favoriteQuote': 'Strippers do nothing for me…but I will take a free breakfast buffet anytime, anyplace.',
-    'otherQuote': "The idea that everyone should slavishly work so they do something inefficiently so they keep their job – that just doesn’t make any sense to me. That can’t be the right answer."
+    'bestJoke': "I needed a password eight characters long so I picked Snow White and the Seven Dwarfs."
   },
   employee2: {
     'id': '2',
@@ -46,26 +47,25 @@ const DATABASE = {
 };
 
 //Get a quote to add to a new employee
+let inQuote;
 const quote = () => {
   const url = "https://ron-swanson-quotes.herokuapp.com/v2/quotes";
   request.get(url, (error, response, body) => {
-    let inQuote = JSON.parse(body);
-    console.log(inQuote);
-    return inQuote;
+    inQuote = JSON.parse(body);
   })
 };
 
 //Get a joke to add to a new employee
+let inJoke;
 const joke = () => {
   const url1 = "https://icanhazdadjoke.com";
   request.get(url1, (error, response, body) => {
     let $ = cheerio.load(body)
-    let inJoke = $("p.subtitle").text();
-    console.log(inJoke);
-    return inJoke;
-
+    inJoke = $("p.subtitle").text();
   })
+
 }
+
 
 /* GET employees listing. */
 router.get('', function (req, res) {
@@ -83,14 +83,14 @@ router.get('/:id', function (req, res) {
   }
 })
 
-/*POST new employee. Generate a unique id. If the role of the new employee is "CEO", reject it as the CEO already exists and there can be just one. The hire date of the employee has to be in the past, so has to be less than the date today.*/
+/*POST new employee. Generate a unique id. If the role of the new employee is "CEO", reject it as the CEO already exists and there can be just one. The hire date of the employee has to be in the past, so has to be less than the date today. Add a joke and a quote to the employee's details*/
 router.post('', function (req, res) {
   maxId += 1;
   const newEmployee = req.body;
   if (newEmployee.role !== "CEO") {
     newEmployee.id = maxId;
-    newEmployee.favoriteQuote = quote()
-    newEmployee.bestJoke = joke()
+    newEmployee.favoriteQuote = inQuote;
+    newEmployee.bestJoke = inJoke;
     DATABASE["employee" + newEmployee.id] = newEmployee;
     res.send(newEmployee)
   }
