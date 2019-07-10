@@ -3,7 +3,7 @@
 const express = require('express');
 const router = express.Router();
 const request = require("request-promise-native");
-// const cheerio = require("cheerio");
+const cheerio = require("cheerio");
 
 const DATABASE = {}
 let maxId = 0
@@ -41,16 +41,17 @@ const setQuote = (newEmployee, errors) => {
 
 //GET joke from external API and set it as an attribute to the new employee 
 const setJoke = (newEmployee, errors) => {
-  return request.get({ url: "https://icanhazdadjoke.com", headers: { "Accept": "application/json" } }).then(resp => {
-    // let $ = cheerio.load(body)
-    // newEmployee['joke'] = $("p.subtitle").text();
-    newEmployee['joke'] = JSON.parse(resp)['joke'];
-    console.log(newEmployee)
-  }).catch((err) => {
-    errors.push("Unable to get the joke!")
-    console.log(err)
-  }
-  )
+  return request.get(
+    "https://icanhazdadjoke.com").then(resp => {
+      let $ = cheerio.load(resp)
+      newEmployee['joke'] = $("p.subtitle").text();
+      // newEmployee['joke'] = JSON.parse(resp)['joke'];
+      console.log(newEmployee)
+    }).catch((err) => {
+      errors.push("Unable to get the joke!")
+      console.log(err)
+    }
+    )
 }
 
 //Check if the hire date provided for the employee is a valid date
