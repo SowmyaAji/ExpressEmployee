@@ -62,43 +62,72 @@ router.get('/:id', function (req, res) {
 })
 
 //GET quote from external API and set it as an attribute to the new employee 
-const setQuote = (newEmployee) => {
-  return request.get("https://ron-swanson-quotes.herokuapp.com/v2/quotes").then(
+const setQuote = (newEmployee, errors) => {
+  return request.get("https://xron-swanson-quotes.herokuapp.com/v2/quotes").then(
     resp => {
       newEmployee['quote'] = JSON.parse(resp)[0];
       console.log(newEmployee)
     }
+  ).catch((err) => {
+    errors.push("Unable to get the quote!")
+    console.log(err)
+  }
   )
 }
 
 //GET joke from external API and set it as an attribute to the new employee 
-const setJoke = (newEmployee) => {
+const setJoke = (newEmployee, errors) => {
   return request.get({ url: "https://icanhazdadjoke.com", headers: { "Accept": "application/json" } }).then(resp => {
     // let $ = cheerio.load(body)
     // newEmployee['joke'] = $("p.subtitle").text();
     newEmployee['joke'] = JSON.parse(resp)['joke'];
     console.log(newEmployee)
-  })
+  }).catch((err) => {
+    errors.push("Unable to get the joke")
+    console.log(err)
+  }
+  )
 }
 
+const validatePayload = (employee) => {
+  let errors = []
+  if (typeof (employee.firstName) !== "string") {
+    errors.push("Invalid first name")
+  }
+  if (typeof (employee.lastName) !== "string") {
+    errors.push("Invalid last name")
+  }
+
+  if (employee.role === "CEO") {
+    errors.push("The role listed is wrong.")
+  }
+  return errors
+}
 //POST new employee. 
 //Generate a unique id.
 //If the role of the new employee is "CEO", reject it as the CEO already exists and there can be just one.
 //The hire date of the employee has to be in the past, so has to be less than the date today. 
 //Add a joke and a quote from the above functions to the employee's details
 router.post('', function (req, res) {
-  maxId += 1;
   const newEmployee = req.body;
-  if (newEmployee.role !== "CEO") {
+  let errors = validatePayload(newEmployee)
+  if (errors.length > 0) {
+    res.status(400).send(errors);
+  }
+  else {
+    maxId += 1;
     newEmployee.id = maxId;
     DATABASE["employee" + newEmployee.id] = newEmployee;
-    Promise.all([setQuote(newEmployee), setJoke(newEmployee)]).then(resp => {
-      res.send(newEmployee)
+    Promise.all([setQuote(newEmployee, errors), setJoke(newEmployee, errors)]).then(resp => {
+      if (errors.length > 0) {
+        res.status(400).send(errors);
+      }
+      else {
+        res.send(newEmployee)
+      }
     })
   }
-  else { res.send("The role listed is wrong.") }
-}
-);
+});
 
 //UPDATE an employee's details. 
 router.put('/:id', function (req, res) {
