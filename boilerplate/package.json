@@ -8,7 +8,6 @@
     "test": "mocha 'test/employee_test.js'"
   },
   "dependencies": {
-    "chai": "^4.2.0",
     "cheerio": "^1.0.0-rc.3",
     "express": "~4.16.1",
     "mocha": "^6.1.4",
