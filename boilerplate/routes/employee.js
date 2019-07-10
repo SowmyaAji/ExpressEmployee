@@ -17,12 +17,12 @@ router.get('', function (req, res) {
 
 // GET one employee by id. 
 router.get('/:id', function (req, res) {
-  const employee = DATABASE["employee" + req.params.id];
-  if (req.params.id in DATABASE) {
+  const employee = DATABASE[req.params.id.toString()];
+  if (employee !== undefined) {
     res.send(employee);
   }
   else {
-    res.send("That employee does not exist in our records")
+    res.status(404).send("That employee does not exist in our records")
   }
 })
 
@@ -61,6 +61,25 @@ const getCeo = () => {
   }
 }
 
+const isValidDate = (dt) => {
+  return dt && !isNaN(dt) &&
+    Object.prototype.toString.call(dt) === "[object Date]"
+}
+const validateHireDate = (employee) => {
+  const hireDate = new Date(employee.hireDate);
+  const today = new Date();
+  const errors = []
+  if (!employee.hireDate.match(/^\d\d\d\d-\d\d-\d\d$/g)) {
+    errors.push("Invalid date format, please provide in the YYYY-MM-DD one")
+  } else if (!isValidDate(hireDate)) {
+    errors.push("Invalid hire date provided")
+  }
+  else if (hireDate > today) {
+    errors.push("Invalid hire date provided")
+  }
+  return errors;
+}
+
 const validatePayload = (employee) => {
   let errors = []
   const roles = ['MANAGER', 'VP', 'LACKEY', 'CEO']
@@ -82,7 +101,7 @@ const validatePayload = (employee) => {
 
     }
   }
-  return errors
+  return errors.concat(validateHireDate(employee))
 }
 //POST new employee. 
 //Generate a unique id.
@@ -97,8 +116,8 @@ router.post('', function (req, res) {
   }
   else {
     maxId += 1;
-    newEmployee.id = maxId;
-    DATABASE["employee" + newEmployee.id] = newEmployee;
+    newEmployee.id = maxId.toString();
+    DATABASE[newEmployee.id] = newEmployee;
     Promise.all([setQuote(newEmployee, errors), setJoke(newEmployee, errors)]).then(resp => {
       if (errors.length > 0) {
         res.status(400).send(errors);
@@ -112,22 +131,28 @@ router.post('', function (req, res) {
 
 //UPDATE an employee's details. 
 router.put('/:id', function (req, res) {
-  const id = parseInt(req.params.id);
+  const id = req.params.id.toString();
   const updatedEmployee = req.body;
-  if (DATABASE["employee" + id] != null) {
-    // update data
-    DATABASE["employee" + id] = updatedEmployee;
-    // return
-    res.send(updatedEmployee);
+  if (DATABASE[id]) {
+    let errors = validatePayload(updatedEmployee)
+    if (!errors.length > 0) {
+      // update data
+      DATABASE[id] = updatedEmployee;
+      // return
+      res.send(updatedEmployee);
+    } else {
+      res.status(400).send(errors);
+    }
   } else {
-    res.send("This employee doesn't exist:\n:" + updatedEmployee);
+    res.status(404).send("This employee doesn't exist:\n:" + updatedEmployee);
   }
 })
 
 /*DELETE an employee's details. */
 router.delete('/:id', function (req, res) {
-  const deleteEmployee = DATABASE["employee" + req.params.id];
-  delete DATABASE["employee" + req.params.id];
+  const id = req.params.id.toString()
+  const deleteEmployee = DATABASE[id];
+  delete DATABASE[id];
   res.send(deleteEmployee);
 })
 
