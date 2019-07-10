@@ -4,18 +4,17 @@ const express = require('express');
 const router = express.Router();
 const request = require("request-promise-native");
 // const cheerio = require("cheerio");
-// let dToday = new Date();
-// console.log(dToday)
-
 
 const DATABASE = {}
 let maxId = 0
+
+
 // GET employees listing.
 router.get('', function (req, res) {
   return res.send(DATABASE);
 });
 
-// GET one employee by id. 
+// GET a single employee by id. 
 router.get('/:id', function (req, res) {
   const employee = DATABASE[req.params.id.toString()];
   if (employee !== undefined) {
@@ -48,23 +47,19 @@ const setJoke = (newEmployee, errors) => {
     newEmployee['joke'] = JSON.parse(resp)['joke'];
     console.log(newEmployee)
   }).catch((err) => {
-    errors.push("Unable to get the joke")
+    errors.push("Unable to get the joke!")
     console.log(err)
   }
   )
 }
-const getCeo = () => {
-  for (let value of Object.values(DATABASE)) {
-    if (value.role.toUpperCase() === "CEO") {
-      return value;
-    }
-  }
-}
 
+//Check if the hire date provided for the employee is a valid date
 const isValidDate = (dt) => {
   return dt && !isNaN(dt) &&
     Object.prototype.toString.call(dt) === "[object Date]"
 }
+
+//Check if thehiredate of an employee is in the correct format  and if it the date is older than the current day
 const validateHireDate = (employee) => {
   const hireDate = new Date(employee.hireDate);
   const today = new Date();
@@ -80,6 +75,18 @@ const validateHireDate = (employee) => {
   return errors;
 }
 
+//Identify the CEO
+const getCeo = () => {
+  for (let value of Object.values(DATABASE)) {
+    if (value.role.toUpperCase() === "CEO") {
+      return value;
+    }
+  }
+}
+
+//Validate all entries in the post request
+//Check if the employee's role is a permitted one
+//Check if first name\last name are strings 
 const validatePayload = (employee) => {
   let errors = []
   const roles = ['MANAGER', 'VP', 'LACKEY', 'CEO']
@@ -130,6 +137,7 @@ router.post('', function (req, res) {
 });
 
 //UPDATE an employee's details. 
+//Ensure the update also meets all the issues handled by validatePayload
 router.put('/:id', function (req, res) {
   const id = req.params.id.toString();
   const updatedEmployee = req.body;
