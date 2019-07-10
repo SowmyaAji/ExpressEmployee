@@ -9,7 +9,7 @@ const DATABASE = {}
 let maxId = 0
 
 
-// GET employees listing.
+//GET a listing of all employees.
 router.get('', function (req, res) {
   return res.send(DATABASE);
 });
@@ -112,9 +112,7 @@ const validatePayload = (employee) => {
   return errors.concat(validateHireDate(employee))
 }
 //POST new employee. 
-//Generate a unique id.
-//If the role of the new employee is "CEO", reject it as the CEO already exists and there can be just one.
-//The hire date of the employee has to be in the past, so has to be less than the date today. 
+//Generate a unique id. 
 //Add a joke and a quote from the above functions to the employee's details
 router.post('', function (req, res) {
   const newEmployee = req.body;
