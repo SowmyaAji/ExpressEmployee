@@ -3,48 +3,13 @@
 const express = require('express');
 const router = express.Router();
 const request = require("request-promise-native");
-const cheerio = require("cheerio");
+// const cheerio = require("cheerio");
 // let dToday = new Date();
 // console.log(dToday)
 
 
-let maxId = 4
-
-const DATABASE = {
-  employee1: {
-    'id': '1',
-    'firstName': 'Al',
-    'lastName': 'Gore',
-    'hireDate': '2000 - 11 - 02',
-    'role': 'CEO',
-    'favoriteQuote': 'Strippers do nothing for me…but I will take a free breakfast buffet anytime, anyplace.',
-    'bestJoke': "I needed a password eight characters long so I picked Snow White and the Seven Dwarfs."
-  },
-  employee2: {
-    'id': '2',
-    'firstName': 'Bob',
-    'lastName': 'Dylan',
-    'hireDate': '1997-12-12',
-    'role': 'VP'
-  },
-
-  employee3: {
-    'id': '3',
-    'firstName': 'Crystal',
-    'lastName': 'Gayle',
-    'hireDate': '2007-08-11',
-    'role': 'MANAGER'
-  },
-
-  employee4: {
-    'id': '4',
-    'firstName': 'David',
-    'lastName': 'Ortiz',
-    'hireDate': '2004-04-14',
-    'role': 'LACKEY'
-  },
-};
-
+const DATABASE = {}
+let maxId = 0
 // GET employees listing.
 router.get('', function (req, res) {
   return res.send(DATABASE);
@@ -88,18 +53,34 @@ const setJoke = (newEmployee, errors) => {
   }
   )
 }
+const getCeo = () => {
+  for (let value of Object.values(DATABASE)) {
+    if (value.role.toUpperCase() === "CEO") {
+      return value;
+    }
+  }
+}
 
 const validatePayload = (employee) => {
   let errors = []
+  const roles = ['MANAGER', 'VP', 'LACKEY', 'CEO']
   if (typeof (employee.firstName) !== "string") {
     errors.push("Invalid first name")
   }
   if (typeof (employee.lastName) !== "string") {
     errors.push("Invalid last name")
   }
-
-  if (employee.role === "CEO") {
+  if (typeof (employee.role) !== "string" || !roles.includes(employee.role.toUpperCase())) {
     errors.push("The role listed is wrong.")
+  }
+  else {
+    if (employee.role.toUpperCase() === "CEO") {
+      let ceo = getCeo()
+      if (ceo !== undefined && ceo.id !== employee.id) {
+        errors.push("Hey, the CEO is " + ceo.firstName + " " + ceo.lastName + "!")
+      }
+
+    }
   }
   return errors
 }
