@@ -63,7 +63,7 @@ router.get('/:id', function (req, res) {
 
 //GET quote from external API and set it as an attribute to the new employee 
 const setQuote = (newEmployee, errors) => {
-  return request.get("https://xron-swanson-quotes.herokuapp.com/v2/quotes").then(
+  return request.get("https://ron-swanson-quotes.herokuapp.com/v2/quotes").then(
     resp => {
       newEmployee['quote'] = JSON.parse(resp)[0];
       console.log(newEmployee)
