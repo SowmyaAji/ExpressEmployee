@@ -4,14 +4,18 @@
   "private": true,
   "main": "app.js",
   "scripts": {
-    "start": "node app"
+    "start": "node app",
+    "test": "mocha 'test/employee_test.js'"
   },
   "dependencies": {
+    "chai": "^4.2.0",
     "cheerio": "^1.0.0-rc.3",
     "express": "~4.16.1",
+    "mocha": "^6.1.4",
     "nodemon": "^1.19.1",
     "request": "^2.88.0",
-    "request-promise-native": "^1.0.7"
+    "request-promise-native": "^1.0.7",
+    "supertest": "^4.0.2"
   },
   "devDependencies": {}
 }
