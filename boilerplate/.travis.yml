@@ -1,13 +1,14 @@
 language: node_js
+
 node_js:
-  - '6'
-  - '5'
-  - '4'
-  - '0.12'
-  - '0.10'
-  
-cache: 
-  - node_modules  
+  - 6
+  - 8
+  - 10
+
+before_install:
+  - npm i
 
 script:
-  - npm test
+  - npm run test
+
+after_success: npm run coverage
