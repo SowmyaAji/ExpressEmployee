@@ -59,7 +59,7 @@ DELETE http://localhost:3000/api/employees/:id
 - delete the record corresponding to the id parameter
 
 ----------------------------------
-#How the Task was carried out: 
+#How the TASK was carried out: 
 
 ##Overview:
 
@@ -89,6 +89,8 @@ And all the tests will run.
 Command line curl was also used to post data to the API and test out the CRUD commands.  
 
 ###Create:
+
+
 ```
 $ curl -k -H "Content-Type: application/json" -X POST -d '{"firstName":"Walter", "lastName": "White", "hireDate": "2019/01/01", role: 'vp'}' "https://localhost/:3000/api/employees" | jq .
 ```
@@ -120,6 +122,8 @@ The output:
 ```
 
 ###Index/Retrieve:
+
+
 When this was run without creating any employees:
 ```
 $ curl -k -H "Content-Type: application/json" -X GET "http://localhost:3000/api/employees" | jq .
@@ -228,6 +232,8 @@ The output:
 ```
 
 ##Resources used:
+
+
 Express.js -- framework
 Request-Promise-Native -- to access two external APIs
 Cheerio -- to scrape data from the html on one site
