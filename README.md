@@ -59,3 +59,30 @@ DELETE http://localhost:3000/api/employees/:id
 - delete the record corresponding to the id parameter
 
 
+Create
+$ curl -k -H "Content-Type: application/json" -X POST -d '{"firstName":"Walter", "lastName": "White", "hireDate": "2019/01/01", role: 'vp'}' "https://localhost/:3000/api/employees"
+ 
+Index
+$ curl -k  -H "Content-Type: application/json" -X GET "http://localhost:3000/api/employees"
+
+Output:
+{"employee1":{"id":"1","firstName":"Al","lastName":"Gore","hireDate":"2000-10-10","role":"CEO"}}
+ 
+Read
+$ curl -k -H "Content-Type: application/json" -X GET   "https://localhost/:3000/api/employees/1"
+ 
+Update
+$ curl -k -H "Content-Type: application/json" -X PUT -d '{"firstName":"Walter", "lastName": "Reed", "hireDate": "2019/02/01", role: 'vp'}' "https://localhost/:3000/api/employees/1"
+ 
+ 
+Delete
+$ curl -k -H "Content-Type: application/json" -X DELETE "https://localhost/:3000/api/employees/1"
+
+$ curl -k -H "Content-Type: application/json" -X POST -d '{"firstName":"Walter", "lastName": "White", "hireDate": "2019/01/01", "role": "vp"}' "http://localhost:3000/api/employees"
+["Invalid date format, please provide in the YYYY-MM-DD one"]
+
+
+
+$ curl -k -H "Content-Type: application/json" -X GET "http://localhost:3000/api/employees"
+{}
+

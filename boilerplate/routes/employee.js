@@ -5,20 +5,8 @@ const router = express.Router();
 const request = require("request-promise-native");
 const cheerio = require("cheerio");
 
-
-const DATABASE = {
-  employee1: {
-    'id': '1',
-    'firstName': 'Al',
-    'lastName': 'Gore',
-    'hireDate': '2000-10-10',
-    'role': 'CEO'
-  },
-
-};
-
-let maxId = 1
-
+const DATABASE = {};
+let maxId = 0
 
 //GET a listing of all employees.
 router.get('', function (req, res) {
@@ -150,14 +138,15 @@ router.post('', function (req, res) {
 //Ensure the update also meets all the issues handled by validatePayload
 router.put('/:id', function (req, res) {
   const id = req.params.id
+  const currentEmployee = DATABASE["employee" + id]
   const updatedEmployee = req.body;
   let errors = validatePayload(updatedEmployee)
   if (!errors.length > 0)
   // update data
   {
-    DATABASE["employee" + id] = updatedEmployee;
+    const revisedEmployee = Object.assign({}, currentEmployee, updatedEmployee);
     // return
-    res.send(updatedEmployee);
+    res.send(revisedEmployee);
   }
   else {
     res.send("This employee doesn't exist:\n:" + updatedEmployee);
