@@ -67,11 +67,11 @@ The app uses Node.js and its framework Express.js to create, retrieve, update an
 
 ##Installation:
 Clone repository and cd into it
-
+```
 $ cd boilerplate
 $ yarn install
 $ node app.js
-
+```
 
 The API can be accessed via Portman app on the localhost:3000
 
@@ -80,46 +80,152 @@ The API can be accessed via Portman app on the localhost:3000
 Supertest and Mocha were used to write tests for all the functions.
 From the command line run:
 
+```
 npm test
+```
 
 And all the tests will run. 
 
 Command line curl was also used to post data to the API and test out the CRUD commands.  
 
-Create:
-
-$ curl -k -H "Content-Type: application/json" -X POST -d '{"firstName":"Walter", "lastName": "White", "hireDate": "2019/01/01", role: 'vp'}' "https://localhost/:3000/api/employees"
-
+###Create:
+```
+$ curl -k -H "Content-Type: application/json" -X POST -d '{"firstName":"Walter", "lastName": "White", "hireDate": "2019/01/01", role: 'vp'}' "https://localhost/:3000/api/employees" | jq .
+```
 This threw up the error set in the validation function: 
+
+```
 ["Invalid date format, please provide in the YYYY-MM-DD one"]
+```
 
 The command was corrected using the correct date formatting to: 
-curl -k -H "Content-Type: application/json" -X POST -d '{"firstName":"Walter", "lastName": "White", "hireDate": "2019-01-01", "role": "vp"}' "http://localhost:3000/api/employees"
-And the output:
-{"firstName":"Walter","lastName":"White","hireDate":"2019-01-01","role":"vp","id":3,"quote":"Don't waste energy moving unless necessary.","joke":"People who don't eat gluten are really going against the grai
 
-Index/Retrieve:
+```
+$ curl -k -H "Content-Type: application/json" -X POST -d '{"firstName":"Walter", "lastName": "White", "hireDate": "2019-01-01", "role": "vp"}' "http://localhost:3000/api/employees" | jq .
+```
+
+The output:
+
+```
+{
+  "firstName": "Walter",
+  "lastName": "White",
+  "hireDate": "2019-01-01",
+  "role": "vp",
+  "id": 1,
+  "quote": "I love riddles!",
+  "joke": "Why did the half blind man fall in the well? Because he couldn't see that well!"
+}
+
+```
+
+###Index/Retrieve:
 When this was run without creating any employees:
-$ curl -k -H "Content-Type: application/json" -X GET "http://localhost:3000/api/employees"
-{}
-When run again after some employees were created:
-{"employee1":{"firstName":"Jack","lastName":"Ma","hireDate":"2000-10-10","role":"VP","id":1,"quote":"There are three acceptable haircuts: high and tight, crew cut, buzz cut.","joke":"What do you call a cow on a trampoline? A milk shake!"},"employee2":{"firstName":"Jane","lastName":"Ma","hireDate":"2000-10-10","role":"VP","id":2,"joke":"Why did the kid throw the clock out the window? He wanted to see time fly!","quote":"Son, there is no wrong way to consume alcohol."},"employee3":{"firstName":"Walter","lastName":"White","hireDate":"2019-01-01","role":"vp","id":3,"quote":"Don't waste energy moving unless necessary.","joke":"People who don't eat gluten are really going against the grain."}}
+```
+$ curl -k -H "Content-Type: application/json" -X GET "http://localhost:3000/api/employees" | jq .
+```
+The output:
 
-Read/Retrieve single employee:
-curl -k -H "Content-Type: application/json" -X GET "http://localhost:3000/api/employees/1"
+```
+{}
+
+```
+
+When run again after some employees were created:
+
+```
+{
+   "employee1":{
+      "firstName":"Jack",
+      "lastName":"Ma",
+      "hireDate":"2000-10-10",
+      "role":"VP",
+      "id":1,
+      "quote":"There are three acceptable haircuts: high and tight, crew cut, buzz cut.",
+      "joke":"What do you call a cow on a trampoline? A milk shake!"
+   },
+   "employee2":{
+      "firstName":"Jane",
+      "lastName":"Ma",
+      "hireDate":"2000-10-10",
+      "role":"VP",
+      "id":2,
+      "joke":"Why did the kid throw the clock out the window? He wanted to see time fly!",
+      "quote":"Son, there is no wrong way to consume alcohol."
+   },
+   "employee3":{
+      "firstName":"Walter",
+      "lastName":"White",
+      "hireDate":"2019-01-01",
+      "role":"vp",
+      "id":3,
+      "quote":"Don't waste energy moving unless necessary.",
+      "joke":"People who don't eat gluten are really going against the grain."
+   }
+}
+```
+
+###Read/Retrieve single employee:
+
+```
+$ curl -k -H "Content-Type: application/json" -X GET "http://localhost:3000/api/employees/1" | jq .
+
+```
 The output:
-{"firstName":"Jack","lastName":"Ma","hireDate":"2000-10-10","role":"VP","id":1,"quote":"There are three acceptable haircuts: high and tight, crew cut, buzz cut.","joke":"What do you call a cow on a trampoline? A milk shake!"}
+
+```
+{ 
+   "firstName":"Jack",
+   "lastName":"Ma",
+   "hireDate":"2000-10-10",
+   "role":"VP",
+   "id":1,
+   "quote":"There are three acceptable haircuts: high and tight, crew cut, buzz cut.",
+   "joke":"What do you call a cow on a trampoline? A milk shake!"
+}
+``` 
  
- 
-Update:
+###Update:
+
+```
 $ curl -k -H "Content-Type: application/json" -X PUT -d '{"firstName":"Walter", "lastName": "Reed", "hireDate": "2019-02-01", "role": "vp"}' "http://localhost:3000/api/employees/3"
-The output: 
-{"firstName":"Walter","lastName":"Reed","hireDate":"2019-02-01","role":"vp","id":3,"quote":"Don't waste energy moving unless necessary.","joke":"People who don't eat gluten are really going against the grain."}
- 
-Delete:
-$ curl -k -H "Content-Type: application/json" -X DELETE "https://localhost:3000/api/employees/3"
+```
+
 The output:
-{"firstName":"Walter","lastName":"Reed","hireDate":"2019-02-01","role":"vp","id":3,"quote":"Don't waste energy moving unless necessary.","joke":"People who don't eat gluten are really going against the grain."}
+
+```
+{ 
+   "firstName":"Walter",
+   "lastName":"Reed",
+   "hireDate":"2019-02-01",
+   "role":"vp",
+   "id":3,
+   "quote":"Don't waste energy moving unless necessary.",
+   "joke":"People who don't eat gluten are really going against the grain."
+}
+
+```
+
+###Delete:
+
+```
+$ curl -k -H "Content-Type: application/json" -X DELETE "https://localhost:3000/api/employees/3"
+```
+
+The output:
+
+```
+{ 
+   "firstName":"Walter",
+   "lastName":"Reed",
+   "hireDate":"2019-02-01",
+   "role":"vp",
+   "id":3,
+   "quote":"Don't waste energy moving unless necessary.",
+   "joke":"People who don't eat gluten are really going against the grain."
+}
+
+```
 
 ##Resources used:
 Express.js -- framework
