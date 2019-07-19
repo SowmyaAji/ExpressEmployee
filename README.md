@@ -76,7 +76,7 @@ $ yarn install
 $ node app.js
 ```
 
-The API can be accessed via Portman app on the localhost:3000
+The API can be accessed via Postman app (https://www.getpostman.com/) on the localhost:3000
 
 ## Testing Methods:
 
@@ -244,7 +244,11 @@ The output:
 
 
 Express.js -- framework
+
 Request-Promise-Native -- to access two external APIs
+
 Cheerio -- to scrape data from the html on one site
+
 Mocha -- to run tests on the code
+
 Supertest -- to run tests on the code
