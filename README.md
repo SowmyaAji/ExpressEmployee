@@ -73,7 +73,7 @@ Clone repository and cd into it
 ```
 $ cd boilerplate
 $ yarn install
-$ node ./app.js
+$ node app.js
 ```
 
 The API can be accessed via Postman app (https://www.getpostman.com/) on the localhost:3000
