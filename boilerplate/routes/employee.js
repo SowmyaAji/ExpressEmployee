@@ -87,11 +87,11 @@ const getCeo = () => {
 }
 
 //Validate all entries in the post request
-//Check if the employee's role is a permitted one
-//Check if first name\last name are strings 
 const validatePayload = (employee) => {
   let errors = []
+  //Check if the employee's role is a permitted one
   const roles = ['MANAGER', 'VP', 'LACKEY', 'CEO']
+  //Check if first name\last name are strings 
   if (typeof (employee.firstName) !== "string") {
     errors.push("Invalid first name")
   }
@@ -101,20 +101,19 @@ const validatePayload = (employee) => {
   if (typeof (employee.role) !== "string" || !roles.includes(employee.role.toUpperCase())) {
     errors.push("The role listed is wrong.")
   }
+  //Check if new employee is claiming to be CEO
   else {
     if (employee.role.toUpperCase() === "CEO") {
       let ceo = getCeo()
       if (ceo !== undefined && ceo.id !== employee.id) {
         errors.push("Hey, the CEO is " + ceo.firstName + " " + ceo.lastName + "!")
       }
-
     }
   }
   return errors.concat(validateHireDate(employee))
 }
-//CREATE new employee. 
-//Generate a unique id. 
-//Add a joke and a quote from the above functions to the employee's details
+
+//CREATE new employee.  
 router.post('', function (req, res) {
   const newEmployee = req.body;
   let errors = validatePayload(newEmployee)
@@ -122,9 +121,11 @@ router.post('', function (req, res) {
     res.status(400).send(errors);
   }
   else {
+    //Generate a unique id.
     maxId += 1;
     newEmployee.id = maxId;
     DATABASE["employee" + newEmployee.id] = newEmployee;
+    //Add a joke and a quote from the above functions to the employee's details
     Promise.all([setQuote(newEmployee, errors), setJoke(newEmployee, errors)]).then(resp => {
       if (errors.length > 0) {
         res.status(400).send(errors);
@@ -137,14 +138,14 @@ router.post('', function (req, res) {
 });
 
 //UPDATE an employee's details. 
-//Ensure the update also meets all the issues handled by validatePayload
 router.put('/:id', function (req, res) {
   const id = req.params.id
   const currentEmployee = DATABASE["employee" + id]
   const updatedEmployee = req.body;
+  //Ensure the update also meets all the issues handled by validatePayload
   let errors = validatePayload(updatedEmployee)
   if (!errors.length > 0)
-  // update data
+  //Update data and ensure that only the editable fields are updated, not the id, joke or quote
   {
     const revisedEmployee = Object.assign({}, currentEmployee, updatedEmployee);
     // return
@@ -155,7 +156,7 @@ router.put('/:id', function (req, res) {
   }
 })
 
-/*DELETE an employee's details. */
+//DELETE an employee's details.
 router.delete('/:id', function (req, res) {
   const id = req.params.id
   const deleteEmployee = DATABASE["employee" + id];
