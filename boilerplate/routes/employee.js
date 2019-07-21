@@ -55,18 +55,20 @@ const setJoke = (newEmployee, errors) => {
 
 //Check if the hire date provided for the employee is a valid date
 const isValidDate = (dt) => {
-  return dt && !isNaN(dt) &&
-    Object.prototype.toString.call(dt) === "[object Date]"
+  let date1 = new Date(dt)
+  let date2 = date1.toISOString()
+  let date3 = date2.slice(0, 10)
+  return (dt === date3)
 }
 
-//Check if thehiredate of an employee is in the correct format  and if it the date is older than the current day
+//Check if the hiredate of an employee is in the correct format  and if the date is older than the current day
 const validateHireDate = (employee) => {
   const hireDate = new Date(employee.hireDate);
   const today = new Date();
   const errors = []
   if (!employee.hireDate.match(/^\d\d\d\d-\d\d-\d\d$/g)) {
     errors.push("Invalid date format, please provide in the YYYY-MM-DD one")
-  } else if (!isValidDate(hireDate)) {
+  } else if (!isValidDate(employee.hireDate)) {
     errors.push("Invalid hire date provided")
   }
   else if (hireDate > today) {
@@ -110,7 +112,7 @@ const validatePayload = (employee) => {
   }
   return errors.concat(validateHireDate(employee))
 }
-//POST new employee. 
+//CREATE new employee. 
 //Generate a unique id. 
 //Add a joke and a quote from the above functions to the employee's details
 router.post('', function (req, res) {

@@ -38,7 +38,7 @@ describe('GET /api/employees', function () {
     });
 });
 
-//Testing get an employee endpoint by giving an existing user
+//Testing create an employee endpoint by giving an existing user
 describe('GET /api/employees/:id', function () {
     it('respond with json containing a single user', function (done) {
         request(app)
@@ -52,12 +52,12 @@ describe('GET /api/employees/:id', function () {
 
 
 
-//Testing post an employee endpoint with wrong hire date  
+//Testing create an employee endpoint with wrong hire date  
 describe('POST /api/employees', function () {
     let data = {
         "firstName": "Dummy",
         "lastName": "Dummy",
-        "hireDate": "2020-10-10",
+        "hireDate": "2003-02-30",
         "role": "LACKEY",
     }
     it('respond with 400 not created',
@@ -76,12 +76,12 @@ describe('POST /api/employees', function () {
         });
 });
 
-//Testing post an employee endpoint with wrong hire date  
+//Testing create an employee endpoint with wrong hire date format 
 describe('POST /api/employees', function () {
     let data = {
         "firstName": "Dummy",
         "lastName": "Dummy",
-        "hireDate": "20-10-10",
+        "hireDate": "20-02-10",
         "role": "LACKEY",
     }
     it('respond with 400 not created',
@@ -100,7 +100,7 @@ describe('POST /api/employees', function () {
         });
 });
 
-//Testing post an employee endpoint with creating an extra CEO
+//Testing create an employee endpoint with creating an extra CEO
 describe('POST /api/employees', function () {
     let data = {
         "firstName": "Rummy",
@@ -147,6 +147,7 @@ describe('PUT /api/employees/:id', function () {
         });
 });
 
+//Testing delete an employee's details
 describe('DELETE /api/employees/:id', function () {
     it('respond employee deleted', function (done) {
         request(app)
