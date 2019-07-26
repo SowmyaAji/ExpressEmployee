@@ -71,7 +71,6 @@ The app uses Node.js and its framework Express.js to create, retrieve, update an
 
 Clone repository and cd into it
 ```
-$ cd boilerplate
 $ yarn install
 $ node app.js
 ```
