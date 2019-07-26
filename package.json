@@ -4,7 +4,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app",
-    "test": "mocha 'test/employee_test.js'"
+    "test": "mocha --exit 'test/employee_test.js'"
   },
   "dependencies": {
     "cheerio": "^1.0.0-rc.3",

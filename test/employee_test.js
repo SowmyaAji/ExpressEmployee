@@ -34,7 +34,8 @@ describe('GET /api/employees', function () {
             .get('/api/employees')
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(200, done);
+            .expect(200);
+        done();
     });
 });
 
@@ -45,7 +46,8 @@ describe('GET /api/employees/:id', function () {
             .get('/api/employees/1')
             .set('Accept', 'application/json')
             .expect('Content-Type', /json/)
-            .expect(200, done);
+            .expect(200);
+        done();
     });
 });
 
@@ -152,6 +154,8 @@ describe('DELETE /api/employees/:id', function () {
     it('respond employee deleted', function (done) {
         request(app)
             .delete('/api/employees/1')
-            .expect(200, done);
+            .expect(200);
+        done()
+
     });
 });
